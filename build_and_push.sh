@@ -6,10 +6,10 @@
 # The argument to this script is the image name. This will be used as the image on the local
 # machine and combined with the account and region to form the repository name for ECR.
 image=$1
+project=$2
 
-if [ "$image" == "" ]
-then
-    echo "Usage: $0 <image-name>"
+if [ -z "$image" ] || [ -z "$project" ]; then
+    echo "Usage: $0 <image-name> <project-name>"
     exit 1
 fi
 
@@ -51,3 +51,4 @@ docker push ${fullname}
 
 docker save --output ${image}.tar ${image}
 
+wandb artifact put --name ${project}/${image} --type dockerfile Dockerfile
