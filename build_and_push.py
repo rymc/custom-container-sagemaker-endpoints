@@ -19,7 +19,6 @@ def run_command(command):
         print(f"Error executing {command}: {result.stderr}")
     return result.stdout.strip(), result.returncode
 
-
 @click.command()
 @click.option('--image-name', required=True, help='The name to give the built image')
 @click.option('--wandb-project', default='sagemaker_endpoint_deploy', required=False, help='The name of the W&B project to record the build of the run in.')
@@ -66,7 +65,7 @@ def main(image_name, wandb_project, inference_code_dir):
     artifact = wandb.Artifact(name=image, type="dockerfile")
     artifact.add_file("Dockerfile")
     wandb.log_artifact(artifact)
-    wandb.run.log_code(".")
+    wandb.run.log_code(".",  include_fn=lambda path: path.endswith(".py") or path.endswith(".ipynb") or path.endswith("serve") or path.endswith(".conf")  or path.endswith("Dockerfile") )
 
 if __name__ == '__main__':
     main()

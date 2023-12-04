@@ -16,12 +16,15 @@ def err_raise(msg, e=ValueError):
     raise e(msg)
 
 
+"""
+TODO: this could be improved by templating out the account, region and so on. image-uri could then just be the container name.
+"""
 @click.command()
 @click.option('--role', default='arn:aws:iam::770934259321:role/service-role/AmazonSageMaker-ExecutionRole-20231201T125441', required=True, help='The role to be used.')
-@click.option('--image-uri', default='770934259321.dkr.ecr.eu-west-2.amazonaws.com/custom_inf:latest', required=True, help='The URI of the image.')
-@click.option('--sagemaker-bucket', default='gpstec417-builder-session-eu-west-2-770934259321', required=True, help='The S3 bucket for SageMaker.')
-@click.option('--artifact', default='wandb-smle/sagemaker_endpoint_deploy/clf:v0', help='The model to be used.')
-@click.option('--wandb_project', default='sagemaker_endpoint_deploy', help='The W&B run to record the project in.')
+@click.option('--image-uri', default='770934259321.dkr.ecr.eu-west-2.amazonaws.com/custom_container:latest', required=True, help='The URI of the image.')
+@click.option('--sagemaker-bucket', default='sagemaker-endpoint-model-data', required=True, help='The S3 bucket for SageMaker Models.')
+@click.option('--artifact', default='wandb-smle/sagemaker_endpoint_deploy/clf:latest', help='The model to be used.')
+@click.option('--wandb-project', default='sagemaker_endpoint_deploy', help='The W&B run to record the project in.')
 def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
     config = {
         "role": role,
@@ -30,7 +33,7 @@ def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
         "artifact": artifact
     }
 
-    with wandb.init(project=wandb_project, job_type="deployment", config=config, settings = wandb.Settings(disable_git=True)) as run:
+    with wandb.init(project=wandb_project, job_type="deployment", config=config, settings=wandb.Settings(disable_git=True)) as run:
 
         wandb_termlog_heading("Downloading artifact from wandb")
 
@@ -44,7 +47,7 @@ def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
         except Exception as e:  # container wasn't logged to W&B
             wandb_termlog_heading(
                 f"Could not find container W&B artifact for {container_artifact} to link")
-
+            
         wandb_termlog_heading("Creating temp directory for sagemaker model")
         name_ver = path.split("/")[-1]
         name, ver = name_ver.split(":v")
@@ -58,6 +61,7 @@ def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
 
         wandb_termlog_heading("Uploading model to S3")
         session = Session()
+
         model_data = session.upload_data(
             bucket=run.config["sagemaker_bucket"], path=model_tar,
         )
@@ -81,7 +85,7 @@ def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
         wandb_termlog_heading(
             f"Successfully deployed model {model.name} at endpoint {model.endpoint_name}")
         run.config["sagemaker_endpoint_name"] = model.endpoint_name
-        run.log_code()
+        run.log_code(".")
 
 
 if __name__ == '__main__':

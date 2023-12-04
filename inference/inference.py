@@ -1,28 +1,21 @@
-# This is the file that implements a flask server to do inferences. It's the file that you will modify
-# to implement the prediction for your own algorithm.
-
+# This is the file that implements a flask server to do inference. You can modify it with your own custom code.
 from __future__ import print_function
 
-import os, sys, stat
-import json
-import shutil
-
+import os
 import torch
 import torchvision.transforms.functional as TF
 from PIL import Image
 
 import flask
-from flask import Flask, jsonify
-import glob
+from flask import jsonify
 from net import Net
 
-
-MODEL_PATH = '/opt/ml/model/cifar_net.pth'
+MODEL_PATH = '/opt/ml/model/'
 DATA_PATH = '/tmp/data'
 
 IMG_FOR_INFERENCE = os.path.join(DATA_PATH, 'image_for_inference.jpg')
 
-# in this tmp folder, image for inference will be saved
+
 if not os.path.exists(DATA_PATH):
     os.makedirs(DATA_PATH, mode=0o755,exist_ok=True)
 
@@ -37,15 +30,14 @@ def write_test_image(stream):
             f.write(chunk)
 
             
-# A singleton for holding the model. This simply loads the model and holds it.
-# It has a predict function that does a prediction based on the model and the input data.
 class ClassificationService(object):
 
     @classmethod
     def get_model(cls):
-        """Get the model object for this instance."""
-        net = Net()
-        net.load_state_dict(torch.load(MODEL_PATH))
+        """Get the model object for this instance.  TODO: don't hardcode the model artfiact filename in here"""
+        net = Net() 
+
+        net.load_state_dict(torch.load(f"{MODEL_PATH}cifar_net.pth"))
         return net
 
     @classmethod
@@ -71,16 +63,14 @@ def ping():
 @app.route('/invocations', methods=['POST'])
 def transformation():
 
-    write_test_image(flask.request.stream) #receive the image and write it out as a JPEG file.
+    write_test_image(flask.request.stream) 
     
     image = Image.open(IMG_FOR_INFERENCE)
     x = TF.to_tensor(image)
     x.unsqueeze_(0)
 
-    # Do the prediction
-    predictions = ClassificationService.predict(x) #predict() also loads the model
+    predictions = ClassificationService.predict(x)
 
-    # Convert result to JSON
     return_value = { "predictions": {} }
     return_value["predictions"]["class"] = str(predictions[0])
     print(return_value)

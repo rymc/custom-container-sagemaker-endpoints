@@ -14,7 +14,7 @@ ENV PYTHONUNBUFFERED=TRUE
 ENV PYTHONDONTWRITEBYTECODE=TRUE
 ENV PATH="/opt/program:${PATH}"
 
-# Set up the program in the image
+# Copy over the program in the image
 COPY inference /opt/program
 
 RUN ls /opt/program
