@@ -25,12 +25,14 @@ TODO: this could be improved by templating out the account, region and so on. im
 @click.option('--sagemaker-bucket', default='sagemaker-endpoint-model-data', required=True, help='The S3 bucket for SageMaker Models.')
 @click.option('--artifact', default='wandb-smle/sagemaker_endpoint_deploy/clf:latest', help='The model to be used.')
 @click.option('--wandb-project', default='sagemaker_endpoint_deploy', help='The W&B run to record the project in.')
-def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
+@click.option('--instance-type', default='ml.m4.xlarge', help='The AWS instance type fore inference.')
+def main(role, image_uri, sagemaker_bucket, artifact, wandb_project, instance_type):
     config = {
         "role": role,
         "image_uri": image_uri,
         "sagemaker_bucket": sagemaker_bucket,
-        "artifact": artifact
+        "artifact": artifact,
+        "instance_type": instance_type
     }
 
     with wandb.init(project=wandb_project, job_type="deployment", config=config, settings=wandb.Settings(disable_git=True)) as run:
@@ -80,7 +82,7 @@ def main(role, image_uri, sagemaker_bucket, artifact, wandb_project):
 
         # To deploy the model (create an endpoint), you can use:
         predictor = model.deploy(
-            initial_instance_count=1, instance_type='ml.m4.xlarge')
+            initial_instance_count=1, instance_type=run.config["instance_type"])
 
         wandb_termlog_heading(
             f"Successfully deployed model {model.name} at endpoint {model.endpoint_name}")

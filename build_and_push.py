@@ -1,3 +1,5 @@
+""" This code is based on https://github.com/aws/amazon-sagemaker-examples/tree/main """
+
 import subprocess
 import sys
 import wandb

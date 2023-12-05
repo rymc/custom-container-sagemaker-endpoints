@@ -1,4 +1,5 @@
-# This is the file that implements a flask server to do inference. You can modify it with your own custom code.
+# This is the file that implements a flask server to do inference. You can modify it with your own custom code. 
+# It is based on https://github.com/aws-samples/amazon-sagemaker-custom-container/
 from __future__ import print_function
 
 import os

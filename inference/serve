@@ -12,7 +12,7 @@
 # ---------                --------------------              -------------
 # number of workers        MODEL_SERVER_WORKERS              the number of CPU cores
 # timeout                  MODEL_SERVER_TIMEOUT              60 seconds
-
+# It is based on https://github.com/aws-samples/amazon-sagemaker-custom-container/
 from __future__ import print_function
 import multiprocessing
 import os

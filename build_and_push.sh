@@ -1,3 +1,4 @@
+""" This code is based on https://github.com/aws/amazon-sagemaker-examples/tree/main """
 #!/usr/bin/env bash
 
 # This script shows how to build the Docker image and push it to ECR to be ready for use
