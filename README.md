@@ -9,6 +9,7 @@ This is an example of how to use W&B Launch to deploy custom models to Sagemaker
 
 ## Demo Videos
 Overview Video of an example workflow https://www.loom.com/share/13e3d743387f4a0cb7e568d6fdfdaaa4?sid=b59d5e9c-1a6b-4a86-b3f8-3e85a2ab3530
+
 Behind The Scenes (more detail): https://www.loom.com/share/325200335d4149bbb12f7393495da3b6?sid=b047577e-92e8-4826-8784-c09f07f73ebb
 
 ## More details
