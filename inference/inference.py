@@ -37,8 +37,8 @@ class ClassificationService(object):
     def get_model(cls):
         """Get the model object for this instance.  TODO: don't hardcode the model artfiact filename in here"""
         net = Net() 
-
-        net.load_state_dict(torch.load(f"{MODEL_PATH}cifar_net.pth"))
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        net.load_state_dict(torch.load(f"{MODEL_PATH}cifar_net.pth", map_location=device))
         return net
 
     @classmethod

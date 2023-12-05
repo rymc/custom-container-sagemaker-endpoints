@@ -21,10 +21,10 @@ TODO: this could be improved by templating out the account, region and so on. im
 """
 @click.command()
 @click.option('--role', default='arn:aws:iam::770934259321:role/service-role/AmazonSageMaker-ExecutionRole-20231201T125441', required=True, help='The role to be used.')
-@click.option('--image-uri', default='770934259321.dkr.ecr.eu-west-2.amazonaws.com/custom_container:latest', required=True, help='The URI of the image.')
+@click.option('--image-uri', default='770934259321.dkr.ecr.eu-west-2.amazonaws.com/custom_inference:latest', required=True, help='The URI of the image.')
 @click.option('--sagemaker-bucket', default='sagemaker-endpoint-model-data', required=True, help='The S3 bucket for SageMaker Models.')
-@click.option('--artifact', default='wandb-smle/sagemaker_endpoint_deploy/clf:latest', help='The model to be used.')
-@click.option('--wandb-project', default='sagemaker_endpoint_deploy', help='The W&B run to record the project in.')
+@click.option('--artifact', default='wandb-smle/sagemaker-endpoints-custom-models/clf:v6', help='The model to be used.')
+@click.option('--wandb-project', default='sagemaker-endpoints-custom-models', help='The W&B run to record the project in.')
 @click.option('--instance-type', default='ml.m4.xlarge', help='The AWS instance type fore inference.')
 def main(role, image_uri, sagemaker_bucket, artifact, wandb_project, instance_type):
     config = {
@@ -76,7 +76,7 @@ def main(role, image_uri, sagemaker_bucket, artifact, wandb_project, instance_ty
             model_data=model_data,
             role=run.config["role"],
             sagemaker_session=session,
-            name=f"{container_artifact}-{name_ver}".replace(
+            name=f"{container_artifact}-{name_ver}-{wandb.run.id}".replace(
                 ':', '-').replace("_", "-")
         )
 
