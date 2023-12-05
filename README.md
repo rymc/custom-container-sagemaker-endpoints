@@ -1,5 +1,14 @@
 This is an example of how to use W&B Launch to deploy custom models to Sagemaker Endpoints.
 
+## TL;DR
+
+1. Run ``train.py`` to train a model which will log it to W&B.
+2. For the remaining steps, we will be interacting with AWS, so ensure you have valid credentials in your .aws directory, or environment variables (AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN).
+3. run ``python build_and_push.py   --image-name <The name to give the built image  [required]> --wandb-project  <The name of the W&B project to record the build  of the run in> --inference-code-dir <The directory containing the inference code for the container>`` which will build and push the container with the specified image-name to ECR and log the build details to W&B.
+4. run ``python deploy.py   --role <The SageMaker role to be used> --image-uri <The URI of the image, from the previous step> --sagemaker-bucket <The S3 bucket for SageMaker Models> --artifact <The W&B model artifact string path to be deployed> --wandb-project <The W&B run to record the project in> --instance-type <The AWS instance type fore inference>`` which will deploy the model to SageMaker Endpoints.
+
+## More details
+
 Deploying a custom model to Sagemaker Endpoints requires a custom container.
 
 ``build_and_deploy.sh`` and `build_and_deploy.py` (the latter with W&B logging) will build and push such a container. The inference code should be in the inference directory, and it assumes the prediction is done via a script called ``inference.py``. This is where you can add your custom code on how you want to preprocess, transform, predict etc.
