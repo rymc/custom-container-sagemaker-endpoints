@@ -25,5 +25,3 @@ In order to use it, We need is to deploy a model. This is handled by the `deploy
 With W&B Launch we can make and customize deployments from the W&B UI (or command line), as well as automatically with the W&B Model Registry. Such a workflow may involve automatically deploying any model promoted to the W&B model registry to Sagemaker Endpoints. 
 
 You can see more details about this here: https://wandb.ai/wandb-smle/sagemaker-endpoints-custom-models/reports/Custom-Models-to-SageMaker-Endpoints--Vmlldzo2MTcwNDI1
-
-Debugging commit.
